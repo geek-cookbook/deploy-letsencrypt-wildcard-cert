@@ -34,16 +34,19 @@ jobs:
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
+    # Check out the code
     - uses: actions/checkout@v2
 
-    - run: cat manifests/*.yaml
+    # Contatenate any extra YAML into one output
+    - run: |
+        echo "::set-output name=yaml::$(cat manifests/*.yaml)"
       id: get_yaml
 
     # Prepare clusterissuers
     - uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
-        _input-text: ${{ steps.get_yaml.outputs.result }}
+        _input-text: '${{ steps.get_yaml.outputs.yaml }}'
         _format-key: '%%key%%'
         dnszone: banana
 
