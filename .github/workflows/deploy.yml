@@ -1,4 +1,4 @@
-name: Deploy helm chart to Kubernetes
+name: deploy-letsencrypt-wildcard-cert
 
 # Trigger either on a push to master, on when the repo is _starred_ 
 # (the if statement in the deploy job ensures only the repo owner can do this)
@@ -18,7 +18,7 @@ env:
 jobs:
   # Since we're allowing the workflow to be triggered with a star, only trigger if the repo owner performed
   # the action which triggered us (https://stackoverflow.com/questions/58933155/manual-workflow-triggers-in-github-actions/58965362#58965362)
-  authorize: 
+  i-can-haz-access: 
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
-    needs: [authorize] # Don't proceed unless authorize step above passed
+    needs: [i-can-haz-access] # Don't proceed unless authorize step above passed
     name: Deploy chart
     runs-on: ubuntu-latest
     steps:
@@ -82,9 +82,8 @@ jobs:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
     - name: Deploy extra manifests into K8s
-      uses: azure/k8s-deploy@v1
+      uses: azure/k8s-deploy@master
       with:
         namespace: '${{env.RELEASE_NAME}}'
         manifests: |
             .github/extra_manifests.yaml
-        action: deploy
