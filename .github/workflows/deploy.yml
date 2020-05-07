@@ -61,7 +61,7 @@ jobs:
       id: sub
       with:
         _input-text: '${{ steps.get_yaml.outputs.yaml }}'
-        _output-file: .github/extra_manifests.yaml
+        _output-file: manifests/prepared.yaml
         _format-key: '%%key%%'
         dnszone: ${{ secrets.DNSZONE }}
         cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
@@ -78,14 +78,11 @@ jobs:
         secret-type: 'generic'
         arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
         secret-name: cloudflare-api-token-secret       
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
     - name: Deploy extra manifests into K8s
       uses: azure/k8s-deploy@v1
       with:
         namespace: '${{env.RELEASE_NAME}}'
         manifests: |
-            .github/extra_manifests.yaml
-            banana
+            manifests/prepared.yaml
         action: deploy
