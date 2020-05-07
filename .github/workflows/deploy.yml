@@ -6,8 +6,9 @@ on:
       - master
 
 env:
-  CHART_NAME: '<chart name>'
-  CHART_REPO: '<chart repo url>'
+  CHART_NAME: 'secret-replicator'
+  CHART_REPO: 'https://kiwigrid.github.io'
+  RELEASE_NAME: 'letsencrypt-wildcard-cert'
 
 jobs:
 
@@ -19,16 +20,15 @@ jobs:
     - name: 'Deploy chart'
       uses: 'deliverybot/helm@master'
       with:
-        release: '${{env.CHART_NAME}}'
-        namespace: '${{env.CHART_NAME}}'
+        release: '${{env.RELEASE_NAME}}'
+        namespace: '${{env.RELEASE_NAME}}'
         helm: 'helm3'
         chart: '${{env.CHART_NAME}}'
         repository: '${{env.CHART_REPO}}'
 
         # Insert values.yaml overrides here, indented as you would in a regular YAML file
         values: |
-        #   image:
-        #     repository:   <whatever>/<whatever>:<tag>
+          secretList: "letsencrypt-wildcard-cert"
 
       # Deployment will use the kubeconfig secret you created in the repo
       env:
