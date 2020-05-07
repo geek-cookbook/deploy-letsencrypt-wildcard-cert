@@ -13,6 +13,7 @@ env:
   CHART_NAME: 'secret-replicator'
   CHART_REPO: 'https://kiwigrid.github.io'
   RELEASE_NAME: 'letsencrypt-wildcard-cert'
+  KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
 jobs:
   # Since we're allowing the workflow to be triggered with a star, only trigger if the repo owner performed
@@ -46,10 +47,6 @@ jobs:
         # Insert values.yaml overrides here, indented as you would in a regular YAML file
         values: |
           secretList: "letsencrypt-wildcard-cert"
-
-      # Deployment will use the kubeconfig secret you created in the repo
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
     # Check out the code
     - uses: actions/checkout@v2
