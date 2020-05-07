@@ -52,13 +52,13 @@ jobs:
         _format-key: '%%key%%'
         dnszone: banana
 
-    - name: Prepare the kubeconfig for the next step
-    - uses: azure/k8s-actions/k8s-set-context@master
+    - name: Prepare the kubeconfig for the next step [1/2]
+      uses: azure/k8s-actions/k8s-set-context@master
       with:
         kubeconfig: '${{ secrets.KUBECONFIG }}'
 
     # Insert secret for cert-manager zone management
-    - name: Insert secret into k8s
+    - name: Insert secret into k8s [2/2]
       uses: azure/k8s-create-secret@v1
       with:
         namespace: '${{env.RELEASE_NAME}}'
