@@ -15,10 +15,8 @@ spec:
         dnsZones:
           - "%%dnszone%%"
       dns01:
-        route53:
-          region: blah1
-          hostedZoneID: blah2
-          accessKeyID: blah3
-          secretAccessKeySecretRef:
-            name: cert-manager-route53-credentials-secret
-            key: secret-access-key
+        cloudflare:
+          email: '%%cloudflare_email%%'
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token

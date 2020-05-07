@@ -1,9 +1,13 @@
 name: Deploy helm chart to Kubernetes
 
+# Trigger either on a push to master, on when the repo is _starred_ 
+# (the if statement in the deploy job ensures only the repo owner can do this)
 on:
   push:
     branches:
       - master
+  watch:
+    types: [started]
 
 env:
   CHART_NAME: 'secret-replicator'
@@ -11,8 +15,11 @@ env:
   RELEASE_NAME: 'letsencrypt-wildcard-cert'
 
 jobs:
+  deploy:
+    # Since we're allowing the workflow to be triggered with a star, only trigger if the repo owner performed
+    # the action which triggered us (https://stackoverflow.com/questions/58933155/manual-workflow-triggers-in-github-actions/58965362#58965362)
+    if: github.actor == github.event.repository.owner.login
 
-  build:
     name: Deploy chart
     runs-on: ubuntu-latest
     steps:
@@ -37,34 +44,32 @@ jobs:
     # Check out the code
     - uses: actions/checkout@v2
 
-    # Contatenate any extra YAML into one output
     - name: Prepare to inject extra manifests [1/2]
       run: |
         echo "::set-output name=yaml::$(cat manifests/*.yaml)"
       id: get_yaml
 
-    # Prepare clusterissuers
-    - name: 'Perform placeholder replacement on extra manifests [2/2] :thumbsup:'
+    - name: Perform placeholder replacement on extra manifests [2/2]
       uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
         _input-text: '${{ steps.get_yaml.outputs.yaml }}'
         _format-key: '%%key%%'
-        dnszone: banana
+        dnszone: ${{ secrets.DNSZONE }}
+        cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
 
     - name: Prepare the kubeconfig for the next step [1/2]
-      uses: azure/k8s-actions/k8s-set-context@master
+      uses: azure/k8s-set-context@v1
       with:
         kubeconfig: '${{ secrets.KUBECONFIG }}'
 
-    # Insert secret for cert-manager zone management
     - name: Insert secret into k8s [2/2]
       uses: azure/k8s-create-secret@v1
       with:
         namespace: '${{env.RELEASE_NAME}}'
         secret-type: 'generic'
-        arguments:  --from-literal=account-name=${{ secrets.AZURE_STORAGE_ACCOUNT }} --from-literal=access-key=${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
-        secret-name: azure-storage        
+        arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
+        secret-name: cloudflare-api-token-secret       
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
