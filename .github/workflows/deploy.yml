@@ -87,3 +87,4 @@ jobs:
         namespace: '${{env.RELEASE_NAME}}'
         manifests: |
             .github/extra_manifests.yaml
+        action: deploy
