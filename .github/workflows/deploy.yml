@@ -34,12 +34,16 @@ jobs:
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
 
+    - uses: actions/checkout@v2
+
+    - run: cat manifests/*.yaml
+      id: get_yaml
 
     # Prepare clusterissuers
     - uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
-        _input-file: 'manifests/wildcard-cert.yaml'
+        _input-file: 'manifests/*.yaml'
         _format-key: '%%key%%'
         dnszone: banana
 
