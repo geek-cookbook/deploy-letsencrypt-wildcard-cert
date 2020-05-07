@@ -30,6 +30,12 @@ jobs:
         values: |
           secretList: "letsencrypt-wildcard-cert"
 
+      # Deployment will use the kubeconfig secret you created in the repo
+      env:
+        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+
+
+    # Prepare clusterissuers
     - uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
@@ -37,8 +43,14 @@ jobs:
         _format-key: '%%key%%'
         dnszone: banana
 
-
-      # Deployment will use the kubeconfig secret you created in the repo
+    # Insert secret for cert-manager zone management
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: '${{env.RELEASE_NAME}}'
+        secret-type: 'generic'
+        arguments:  --from-literal=account-name=${{ secrets.AZURE_STORAGE_ACCOUNT }} --from-literal=access-key=${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+        secret-name: azure-storage        
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+
 
