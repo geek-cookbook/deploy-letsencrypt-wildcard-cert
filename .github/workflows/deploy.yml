@@ -43,7 +43,7 @@ jobs:
     - uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
-        _input-file: 'manifests/*.yaml'
+        _input-text: ${{ steps.get_yaml.outputs.result }}
         _format-key: '%%key%%'
         dnszone: banana
 
