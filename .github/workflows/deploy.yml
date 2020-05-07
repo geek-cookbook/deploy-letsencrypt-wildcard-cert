@@ -15,11 +15,21 @@ env:
   RELEASE_NAME: 'letsencrypt-wildcard-cert'
 
 jobs:
-  deploy:
-    # Since we're allowing the workflow to be triggered with a star, only trigger if the repo owner performed
-    # the action which triggered us (https://stackoverflow.com/questions/58933155/manual-workflow-triggers-in-github-actions/58965362#58965362)
-    if: github.actor == github.event.repository.owner.login
+  # Since we're allowing the workflow to be triggered with a star, only trigger if the repo owner performed
+  # the action which triggered us (https://stackoverflow.com/questions/58933155/manual-workflow-triggers-in-github-actions/58965362#58965362)
+  authorize: 
+    runs-on: ubuntu-latest
 
+    steps:
+    - uses: octokit/request-action@v2.0.0
+      with:
+        route: GET /repos/:repository/collaborators/${{ github.actor }}
+        repository: ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: [authorize] # Don't proceed unless authorize step above passed
     name: Deploy chart
     runs-on: ubuntu-latest
     steps:
