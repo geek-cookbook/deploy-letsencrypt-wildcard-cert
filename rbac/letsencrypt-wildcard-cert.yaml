@@ -4,7 +4,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: helm-deploy-nginx-ingress-controller
+  name: helm-deploy-letsencrypt-wildcard-cert
 rules:
   - apiGroups: ["", "rbac.authorization.k8s.io"]
     resources: ["clusterroles","clusterrolebindings"]
@@ -13,12 +13,12 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: helm-deploy-nginx-ingress-controller
+  name: helm-deploy-letsencrypt-wildcard-cert
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  name: helm-deploy-nginx-ingress-controller
+  name: helm-deploy-letsencrypt-wildcard-cert
 subjects:
   - kind: ServiceAccount
-    name: helm-deploy-nginx-ingress-controller
-    namespace: nginx-ingress-controller
+    name: helm-deploy-letsencrypt-wildcard-cert
+    namespace: letsencrypt-wildcard-cert

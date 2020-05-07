@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: letsencrypt-wildcard-cert  
+spec:
+  acme:
+    email: blah4
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+
+    - selector:
+        dnsZones:
+         - "%%dnszone%%"
+      dns01:
+        route53:
+          region: blah1
+          hostedZoneID: blah2
+          accessKeyID: blah3
+          secretAccessKeySecretRef:
+            name: cert-manager-route53-credentials-secret
+            key: secret-access-key

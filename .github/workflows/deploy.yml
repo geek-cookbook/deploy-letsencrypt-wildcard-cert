@@ -30,7 +30,15 @@ jobs:
         values: |
           secretList: "letsencrypt-wildcard-cert"
 
+    - uses: BjornLuG/substitute-string-action@v1
+      id: sub
+      with:
+        _input-file: 'manifests/*.yaml'
+        _format-key: '%%key%%'
+        dnszone: banana
+
+
       # Deployment will use the kubeconfig secret you created in the repo
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-        
+

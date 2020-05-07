@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: letsencrypt-wildcard-cert
+  namespace: letsencrypt-wildcard-cert
+spec:
+ secretName: letsencrypt-wildcard-cert
+ issuerRef:
+   name: letsencrypt-staging
+   kind: Issuer
+ dnsNames:
+  - "%%dnszone%%"
+  - "*.%%dnszone%%"
+
