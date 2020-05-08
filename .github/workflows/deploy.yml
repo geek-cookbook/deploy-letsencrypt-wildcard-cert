@@ -71,19 +71,20 @@ jobs:
       with:
         kubeconfig: '${{ secrets.KUBECONFIG }}'
 
-    # - name: Insert secret into k8s [2/2]
-    #   uses: azure/k8s-create-secret@v1
-    #   with:
-    #     namespace: '${{env.RELEASE_NAME}}'
-    #     secret-type: 'generic'
-    #     arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
-    #     secret-name: cloudflare-api-token-secret       
-
-    - name: Deploy extra manifests into K8s
-      uses: azure/k8s-deploy@v1
+    - name: Insert secret into k8s [2/2]
+      uses: azure/k8s-create-secret@v1
       with:
         namespace: '${{env.RELEASE_NAME}}'
-        manifests: manifests/prepared.yaml
+        secret-type: 'generic'
+        arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
+        secret-name: cloudflare-api-token-secret       
+
+    - name: Apply extra manifests
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG }}
+      with:
+        args: 'apply -f manifests/prepared.yaml'
 
     # And because I'm likely to ignore email...
     - name: notify-slack-of-failure
