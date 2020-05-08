@@ -71,6 +71,12 @@ jobs:
       with:
         kubeconfig: '${{ secrets.KUBECONFIG }}'
 
+    - name: Deploy extra manifests into K8s
+      uses: azure/k8s-deploy@v1
+      with:
+        # namespace: '${{env.RELEASE_NAME}}'
+        manifests: manifests/prepared.yaml
+        
     - name: Insert secret into k8s [2/2]
       uses: azure/k8s-create-secret@v1
       with:
@@ -79,9 +85,3 @@ jobs:
         arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
         secret-name: cloudflare-api-token-secret       
 
-    - name: Deploy extra manifests into K8s
-      uses: azure/k8s-deploy@v1
-      with:
-        namespace: '${{env.RELEASE_NAME}}'
-        manifests: manifests/prepared.yaml
-        action: deploy
