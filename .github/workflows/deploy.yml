@@ -86,3 +86,5 @@ jobs:
         manifests: |
             manifests/prepared.yaml
         action: deploy
+        images: |
+          bla/da-image:${{ github.sha }}
