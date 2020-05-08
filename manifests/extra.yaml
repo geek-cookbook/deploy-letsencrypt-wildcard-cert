@@ -1,0 +1,59 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: letsencrypt-wildcard-cert  
+spec:
+  acme:
+    email: '%%cloudflare_email%%'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+
+    - selector:
+        dnsZones:
+          - "%%dnszone%%"
+      dns01:
+        cloudflare:
+          email: '%%cloudflare_email%%'
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: letsencrypt-wildcard-cert  
+spec:
+  acme:
+    email: '%%cloudflare_email%%'
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+
+    - selector:
+        dnsZones:
+         - "%%dnszone%%"
+      dns01:
+        cloudflare:
+          email: '%%cloudflare_email%%'
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: letsencrypt-wildcard-cert
+  namespace: letsencrypt-wildcard-cert
+spec:
+ secretName: letsencrypt-wildcard-cert
+ issuerRef:
+   name: letsencrypt-staging
+   kind: Issuer
+ dnsNames:
+  - "%%dnszone%%"
+  - "*.%%dnszone%%"
