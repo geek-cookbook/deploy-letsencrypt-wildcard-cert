@@ -52,7 +52,7 @@ metadata:
 spec:
  secretName: letsencrypt-wildcard-cert
  issuerRef:
-   name: letsencrypt-staging
+   name: letsencrypt-prod
    kind: Issuer
  dnsNames:
   - "%%dnszone%%"
