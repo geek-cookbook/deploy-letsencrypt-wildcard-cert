@@ -74,13 +74,6 @@ jobs:
         arguments:  --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
         secret-name: cloudflare-api-token-secret       
 
-    # - name: Apply extra manifests
-    #   uses: steebchen/kubectl@master
-    #   env:
-    #     KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG }}
-    #   with:
-    #     args: 'apply -f manifests/replaced.yaml'
-
     - name: Deploy extra manifests into K8s
       uses: azure/k8s-deploy@v1
       with:

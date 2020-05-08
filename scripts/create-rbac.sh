@@ -43,7 +43,7 @@ metadata:
   name: helm-deploy-${service}
   namespace: ${service}
 rules:
-- apiGroups: ["", "extensions", "apps", "rbac.authorization.k8s.io", "apiextensions.k8s.io", "networking.k8s.io" ]
+- apiGroups: ["", "extensions", "apps", "rbac.authorization.k8s.io", "apiextensions.k8s.io", "networking.k8s.io", "cert-manager.io" ]
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["batch"]
