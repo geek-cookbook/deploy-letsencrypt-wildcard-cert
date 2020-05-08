@@ -83,8 +83,5 @@ jobs:
       uses: azure/k8s-deploy@v1
       with:
         namespace: '${{env.RELEASE_NAME}}'
-        manifests: |
-            manifests/prepared.yaml
+        manifests: manifests/prepared.yaml
         action: deploy
-        images: |
-          bla/da-image:${{ github.sha }}
