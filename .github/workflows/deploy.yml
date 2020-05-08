@@ -84,3 +84,15 @@ jobs:
       with:
         namespace: '${{env.RELEASE_NAME}}'
         manifests: manifests/prepared.yaml
+
+    # And because I'm likely to ignore email...
+    - name: notify-slack-of-failure
+      uses: rtCamp/action-slack-notify@v2.0.0
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: 'red'
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: ':face_palm: Deploy failed :('
+        SLACK_TITLE: CI failed
+        SLACK_USERNAME: GH Actions     
+      if: failure()        
