@@ -74,9 +74,9 @@ jobs:
     - name: Deploy extra manifests into K8s
       uses: azure/k8s-deploy@v1
       with:
-        # namespace: '${{env.RELEASE_NAME}}'
+        namespace: '${{env.RELEASE_NAME}}'
         manifests: manifests/prepared.yaml
-        
+
     - name: Insert secret into k8s [2/2]
       uses: azure/k8s-create-secret@v1
       with:
