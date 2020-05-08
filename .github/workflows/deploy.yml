@@ -52,8 +52,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Prepare to inject extra manifests [1/2]
-      run: |
-        echo "::set-output name=yaml::$(cat manifests/*.yaml)"
+      run: ::set-output name=yaml::$(cat manifests/*.yaml)
       id: get_yaml
 
     - name: Perform placeholder replacement on extra manifests [2/2]
