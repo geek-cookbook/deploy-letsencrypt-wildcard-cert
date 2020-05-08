@@ -51,22 +51,15 @@ jobs:
     # Check out the code
     - uses: actions/checkout@v2
 
-    - name: Prepare to inject extra manifests [1/2]
-      run: ::set-output name=yaml::$(cat manifests/*.yaml)
-      id: get_yaml
-
-    - name: Perform placeholder replacement on extra manifests [2/2]
+    - name: Perform placeholder replacement on extra manifests
       uses: BjornLuG/substitute-string-action@v1
       id: sub
       with:
-        _input-text: '${{ steps.get_yaml.outputs.yaml }}'
-        _output-file: manifests/prepared.yaml
+        _input-file:  manifests/extra.yaml
+        _output-file: manifests/replaced.yaml
         _format-key: '%%key%%'
         dnszone: ${{ secrets.DNSZONE }}
         cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
-
-    - name: Debug extra manifests
-      run: echo ${{ steps.get_yaml.outputs.yaml }} end
 
     - name: Prepare the kubeconfig for the next step [1/2]
       uses: azure/k8s-set-context@v1
@@ -86,7 +79,7 @@ jobs:
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG }}
       with:
-        args: 'apply -f manifests/prepared.yaml'
+        args: 'apply -f manifests/replaced.yaml'
 
     # And because I'm likely to ignore email...
     - name: notify-slack-of-failure
