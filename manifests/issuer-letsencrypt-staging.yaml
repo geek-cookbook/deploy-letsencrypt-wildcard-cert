@@ -5,7 +5,7 @@ metadata:
   namespace: letsencrypt-wildcard-cert  
 spec:
   acme:
-    email: blah4
+    email: '%%cloudflare_email%%'
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging

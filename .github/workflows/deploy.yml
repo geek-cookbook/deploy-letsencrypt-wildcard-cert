@@ -66,6 +66,9 @@ jobs:
         dnszone: ${{ secrets.DNSZONE }}
         cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
 
+    - name: Debug extra manifests
+      run: cat manifests/prepared.yaml
+
     - name: Prepare the kubeconfig for the next step [1/2]
       uses: azure/k8s-set-context@v1
       with:
